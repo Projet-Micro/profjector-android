@@ -39,23 +39,25 @@ export function authenticateProfessorRequest() {
         type: actionsTypes.AUTHENTICATE_PROFESSOR
     }
 }
-export function authenticateProfessor(credentials : Credentials):
-    ThunkAction<void,ProfessorState,null,Action<string>>{
-    return async function (dispatch:any) {
+export function authenticateProfessor(credentials: Credentials): any
+{
+    return async function (dispatch : ThunkDispatch<{},{},AnyAction>) {
         dispatch(authenticateProfessorRequest());
         axios.post('https://profjector-back.onrender.com/api/users/login', credentials)
             .then(professor => {
+                console.log(professor.data);
                 dispatch(authenticateProfessorSuccess(professor.data))
             })
             .catch(error => {
-                dispatch(authenticateProfessorFailure(error.message))
+                console.log(error.response.data.message)
+                dispatch(authenticateProfessorFailure(error.response.data.message))
             })   
     }
 }
 // STILL NOT USABLE
 export function loadProjectors():
-    ThunkAction<void, ProjectorsState, null, Action<string>>{
-    return async function (dispatch : any) {
+    any{
+    return async function (dispatch : ThunkDispatch<{},{},AnyAction>) {
         dispatch(loadProjectorsRequest());
         // PROJECTORS API STILL NOT DONE IN THE BACK-END
         axios.get("")

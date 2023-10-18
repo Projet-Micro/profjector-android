@@ -1,9 +1,9 @@
-import { StyleSheet, Text, SafeAreaView,View } from 'react-native';
+import { StyleSheet, Text, SafeAreaView,View,TextInput,TouchableOpacity } from 'react-native';
 import React,{ useEffect,useState } from 'react';
 import SquareLogo from './components/SquareLogo';
 import { useFonts } from 'expo-font'
 import * as SplashScreen from 'expo-splash-screen'
-import { TextInput } from 'react-native';
+import { authenticateProfessor } from './index.js';
 import { Path, Svg } from 'react-native-svg';
 export default function App() {
   const [credentials, setCredentials] = useState({
@@ -44,6 +44,12 @@ export default function App() {
         }
       })
     }
+  }
+  const submitCredentials = () => {
+    authenticateProfessor({
+      email:credentials.email.email,
+      password:credentials.password.password
+    })
   }
   const handleEmailSubmit = (email : string) => {
     if (!validateEmail(email)) {
@@ -152,9 +158,11 @@ export default function App() {
           <View>
           <Text style={styles.forgotPasswordLink}>Forgot password ?</Text>
         </View>
-        <View style={styles.submitButtonContainer}>
-          <Text style={styles.submitButtonText}>Login</Text>
-        </View>
+        <TouchableOpacity onPress={submitCredentials} style={{ marginTop:60 }}>
+          <View style={styles.submitButtonContainer}>
+            <Text style={styles.submitButtonText}>Login</Text>
+          </View>
+        </TouchableOpacity>
       </View>
       <Text style={styles.forgotPasswordLink}>Don't have an account ?&nbsp;
         <Text style={{
@@ -212,7 +220,6 @@ const styles = StyleSheet.create({
     fontFamily: 'MarkProBold',
   },
   submitButtonContainer: {
-    marginTop:60,
     backgroundColor: '#3536E6',
     padding: 25,
     justifyContent: 'center',
