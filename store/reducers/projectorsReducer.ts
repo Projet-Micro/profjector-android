@@ -1,22 +1,34 @@
 import { ProjectorsState } from "../types"
-import { LOAD_PROJECTS_FAILURE, LOAD_PROJECTS_SUCCESS, ProjectorsActions } from "../actions/types"
+import { LOAD_PROJECTORS_FAILURE, LOAD_PROJECTORS_SUCCESS, LOAD_PROJECTORS_REQUEST, ProjectorsActions } from "../actions/types"
 import { createReducer } from "../../utils/createReducer"
-const initialState = {
+const initialState : ProjectorsState = {
     projectors: [],
-    message:'',
-}
+    message: '',
+    loading : false,
+} 
 const projectorsReducer = {
-    [LOAD_PROJECTS_SUCCESS]: (state: ProjectorsState[], { projectors }) =>
-    ({
-        ...state,
-        projectors: [...projectors],
-        message: ''
-    }),
-    [LOAD_PROJECTS_FAILURE]: (state: ProjectorsState[], { message }) =>
+    [LOAD_PROJECTORS_REQUEST]: (state: ProjectorsState[]) =>
     ({
         ...state,
         projectors: [],
-        message
+        loading: true,
+        message: '',
+    }),
+    [LOAD_PROJECTORS_SUCCESS]: (state: ProjectorsState[],
+    { projectors }) =>
+    ({
+        ...state,
+        projectors: [...projectors],
+        message: '',
+        loading: false,
+    }),
+    [LOAD_PROJECTORS_FAILURE]: (state: ProjectorsState[],
+    { message }) =>
+    ({
+        ...state,
+        projectors: [],
+        message,
+        loading: false,
     })
 }
 export default (state = initialState, action: ProjectorsActions) => createReducer(projectorsReducer, state, action);

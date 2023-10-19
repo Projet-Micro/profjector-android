@@ -2,27 +2,28 @@ import { ThunkAction, ThunkDispatch } from 'redux-thunk'
 import { Action,AnyAction } from 'redux'
 import * as actionsTypes from './types';
 import axios from 'axios'
-import { ProfessorState, ProjectorsState } from '../types'
+import { Professor, Projector } from '../types'
+import AsyncStorage from '@react-native-community/async-storage';
 import { Credentials } from '../../shared/models';
-export function loadProjectorsSuccess(projectors : ProjectorsState[]) {
+export function loadProjectorsSuccess(projectors : Projector[]) {
     return {
-        type: actionsTypes.LOAD_PROJECTS_SUCCESS,
+        type: actionsTypes.LOAD_PROJECTORS_SUCCESS,
         projectors, 
    } 
 }
 export function loadProjectorsFailure(message: string) {
     return {
-        type: actionsTypes.LOAD_PROJECTS_FAILURE,
+        type: actionsTypes.LOAD_PROJECTORS_FAILURE,
         message,
     }
 }
 export function loadProjectorsRequest() {
     return {
-        type: actionsTypes.LOAD_PROJECTORS
+        type: actionsTypes.LOAD_PROJECTORS_REQUEST
     }
 }
 
-export function authenticateProfessorSuccess(professor: ProfessorState) {
+export function authenticateProfessorSuccess(professor: Professor) {
     return {
         type: actionsTypes.AUTHENTICATE_PROFESSOR_SUCCESS,
         professor,
@@ -36,27 +37,37 @@ export function authenticateProfessorFailure(message: string) {
 }
 export function authenticateProfessorRequest() {
     return {
-        type: actionsTypes.AUTHENTICATE_PROFESSOR
+        type: actionsTypes.AUTHENTICATE_PROFESSOR_REQUEST
     }
 }
-export function authenticateProfessor(credentials: Credentials): any
-{
+export function authenticateProfessor(credentials: Credentials): any{
     return async function (dispatch : ThunkDispatch<{},{},AnyAction>) {
         dispatch(authenticateProfessorRequest());
         axios.post('https://profjector-back.onrender.com/api/users/login', credentials)
-            .then(professor => {
+            .then(async professor => {
                 console.log(professor.data);
                 dispatch(authenticateProfessorSuccess(professor.data))
+                await AsyncStorage.setItem("token", JSON.stringify(professor.data.accessToken))
             })
             .catch(error => {
-                console.log(error.response.data.message)
+                console.log(error)
                 dispatch(authenticateProfessorFailure(error.response.data.message))
             })   
     }
 }
+export function loadProfessor(): any {
+    return async function (dispatch: ThunkDispatch<{}, {}, AnyAction>) {
+        const stringProfessor = await AsyncStorage.getItem("token");
+        if (stringProfessor) {
+            console.log("INTO LOAD",stringProfessor)
+            dispatch(authenticateProfessorRequest());
+            let professor = JSON.parse(stringProfessor)
+            dispatch(authenticateProfessorSuccess(professor))           
+        }
+    }
+}
 // STILL NOT USABLE
-export function loadProjectors():
-    any{
+export function loadProjectors(): any{
     return async function (dispatch : ThunkDispatch<{},{},AnyAction>) {
         dispatch(loadProjectorsRequest());
         // PROJECTORS API STILL NOT DONE IN THE BACK-END

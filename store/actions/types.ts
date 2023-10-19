@@ -1,41 +1,36 @@
-import { ProfessorState, ProjectorsState } from "../types";
-
-export const LOAD_PROJECTORS = "PROJECTORS/LOAD_PROJECTORS";
-export const LOAD_PROJECTS_SUCCESS = "PROJECTORS/LOAD_PROJECTS_SUCCESS";
-export const LOAD_PROJECTS_FAILURE = "PROJECTORS/LOAD_PROJECTS_FAILURE"
-export const AUTHENTICATE_PROFESSOR = "PROFESSORS/LOAD_PROFESSOR";
+import { Professor, Projector } from "../types";
+export const LOAD_PROJECTORS_REQUEST = "PROJECTORS/LOAD_PROJECTORS_REQUEST"
+export const LOAD_PROJECTORS_SUCCESS = "PROJECTORS/LOAD_PROJECTORS_SUCCESS";
+export const LOAD_PROJECTORS_FAILURE = "PROJECTORS/LOAD_PROJECTORS_FAILURE"
+export const AUTHENTICATE_PROFESSOR_REQUEST = "PROFESSORS/AUTHENTICATE_PROFESSOR_REQUEST"
 export const AUTHENTICATE_PROFESSOR_SUCCESS = "PROFESSORS/AUTHENTICATE_PROFESSOR_SUCCESS";
 export const AUTHENTICATE_PROFESSOR_FAILURE = "PROFESSORS/AUTHENTICATE_PROFESSOR_FAILURE";
-export interface LoadProjectors{
-    type: typeof LOAD_PROJECTORS;
+export interface LoadProjectorsRequest{
+    type : typeof LOAD_PROJECTORS_REQUEST
 }
-export interface LoadProjectsSuccess{
-    type: typeof LOAD_PROJECTS_SUCCESS,
-    projectors: ProjectorsState[]
+export interface LoadProjectorsSuccess{
+    type: typeof LOAD_PROJECTORS_SUCCESS,
+    projectors: Projector[]
 }
 export interface LoadProjectorsFailure{
-    type: typeof LOAD_PROJECTS_FAILURE,
+    type: typeof LOAD_PROJECTORS_FAILURE,
     message: string
 }
-export interface AuthenticateProfessor{
-    type: typeof AUTHENTICATE_PROFESSOR,
-    credentials: {
-        email: string;
-        password: string;
-    }
+export interface AuthenticateProfessorRequest{
+    type: typeof AUTHENTICATE_PROFESSOR_REQUEST,
 }
 export interface AuthenticateProfessorSuccess{
     type: typeof AUTHENTICATE_PROFESSOR_SUCCESS,
-    professor: ProfessorState
+    professor: Professor
 }
 export interface AuthenticateProfessorFailure{
     type: typeof AUTHENTICATE_PROFESSOR_FAILURE,
     message: string
 }
 export type ProjectorsActions =
-    LoadProjectors
-    | LoadProjectsSuccess;
+    LoadProjectorsSuccess
+    | LoadProjectorsFailure;
 export type ProfessorsActions =
-    AuthenticateProfessor
+    AuthenticateProfessorRequest
     | AuthenticateProfessorSuccess
     | AuthenticateProfessorFailure
