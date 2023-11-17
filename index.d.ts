@@ -3,3 +3,5 @@
 import { Credentials } from "./shared/models";
 export function authenticateProfessor(credentials: Credentials) : void;
 export function loadProjectors(): void;
+export function loadProfessor(): void;
+export function logOutProfessor(): void;

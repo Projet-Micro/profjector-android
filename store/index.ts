@@ -8,6 +8,6 @@ declare global {
   }
 }
 const middlewares = [Thunk]
-const composeEnhancers =   (process.env.NODE_ENV !== 'production' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
+const composeEnhancers =   (process.env.EXPO_PUBLIC_MODE !== 'production' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
 const reducer = combineReducers({professors,projectors});
 export default createStore(reducer, composeEnhancers(applyMiddleware(...middlewares)));

@@ -5,5 +5,11 @@ export function authenticateProfessor(credentials : Credentials) {
     store.dispatch(actions.authenticateProfessor(credentials))
 }
 export function loadProjectors() {
-    store.dispatch(actions.loadProjectors());
+    store.dispatch(actions.loadProjectors())
+}
+export function loadProfessor() {
+    store.dispatch(actions.loadProfessor())
+}
+export function logOutProfessor() {
+    store.dispatch(actions.logOutProfessor())
 }
