@@ -2,10 +2,12 @@
 import {
     authenticateProfessor,
     loadProjectors,
-    loadProfessor
+    loadProfessor,
+    logOutProfessor
 } from './store/dispatcher'
 export {
     authenticateProfessor,
     loadProjectors,
-    loadProfessor
+    loadProfessor,
+    logOutProfessor
 };

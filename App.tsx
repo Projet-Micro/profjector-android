@@ -1,4 +1,4 @@
-import { NavigationContainer } from '@react-navigation/native';
+import 'react-native-gesture-handler';
 import React,{ useEffect } from 'react';
 import { Router } from './router/Router';
 import { Provider } from 'react-redux';

@@ -15,11 +15,12 @@ export type ProfessorState = {
     professor : ProfessorInfo
 }
 export type Projector = {
-    projId: number;
     brand: string;
     serialNumber: string;
     nbrCables: number;
     comment: string;
+    id: number;
+    status: number;
 }
 export type ProjectorsState = {
     projectors: Projector[];

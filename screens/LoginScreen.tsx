@@ -1,10 +1,25 @@
-import { StyleSheet, Text, SafeAreaView,View,TextInput,TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, SafeAreaView,View,TextInput,TouchableOpacity,ActivityIndicator } from 'react-native';
 import React,{ useState } from 'react';
 import SquareLogo from '../components/SquareLogo';
 import { authenticateProfessor } from '../index.js';
 import { Path, Svg } from 'react-native-svg';
+import { useSelector } from 'react-redux';
+import { GlobalState } from '../store/types';  
+type LoginForm = {
+  email: {
+    email: string;
+    error: string;
+    touched: boolean;
+  }
+  password: {
+    password: string;
+    error: string;
+    touched: boolean;
+  }
+}
 export function Login() {
-      const [credentials, setCredentials] = useState({
+     const professor = useSelector((state: GlobalState) => state.professors.professor);
+    const [credentials, setCredentials] = useState<LoginForm>({
     email: {
       email: '',
       error: '',
@@ -20,13 +35,13 @@ export function Login() {
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
     return emailRegex.test(email);
   };
-  const validatePassword = (password: string) => password.length > 6;
+  const validatePassword = (password: string) => password.length > 2;
   const handlePasswordSubmit = (password: string) => {
     if (!validatePassword(password)) {
         setCredentials({
           ...credentials, password: {
           password,
-          error: ' Password length must be greater than 6 characters.',
+          error: 'The password length must be greater than 2 characters.',
           touched : credentials.password.touched
         }
 
@@ -44,22 +59,35 @@ export function Login() {
     }
   }
   const submitCredentials = () => {
+    console.log(credentials.password.password.length);
+    if (credentials.password.password.length === 0) {
+      setCredentials((prev : LoginForm)=> {
+        return {
+          ...prev, password: {
+            password: '',
+            error: 'The password length must be greater than 2 characters.',
+            touched: true
+          }
+        }  
+      
+      })
+    }
+    if (credentials.email.email.length === 0) {
+      setCredentials((prev: LoginForm) => {
+        return {
+          ...prev,
+          email: {
+            email: '',
+            error: 'The email should follow the pattern : a@a.com.',
+            touched: true
+          }
+        }
+      })
+    }
+    console.log(credentials)
     authenticateProfessor({
       email:credentials.email.email,
       PSW:credentials.password.password
-    })
-    setCredentials({
-      ...credentials,
-      password: {
-        password: '',
-        error: '',
-        touched: false
-      },
-      email: {
-        email: '',
-        error: '',
-        touched: false,
-      }
     })
   }
   const handleEmailSubmit = (email : string) => {
@@ -67,7 +95,7 @@ export function Login() {
       setCredentials({
         ...credentials, email: {
           email,
-          error: 'The email should follow the pattern : a@a.com .',
+          error: 'The email should follow the pattern : a@a.com.',
           touched : credentials.email.touched
         }
 
@@ -153,11 +181,18 @@ export function Login() {
           <View>
           <Text style={styles.forgotPasswordLink}>Forgot password ?</Text>
         </View>
-        <TouchableOpacity onPress={submitCredentials} style={{ marginTop:60 }}>
+        {!professor.loading ? <TouchableOpacity onPress={submitCredentials} style={{ marginTop:40 }}>
           <View style={styles.submitButtonContainer}>
             <Text style={styles.submitButtonText}>Login</Text>
           </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
+            :
+          <View style={{ marginTop : 40 }}>
+            <View style={styles.submitButtonContainer}>
+              <ActivityIndicator color="#FFF"/>
+            </View>
+          </View>
+          }
       </View>
       <Text style={styles.forgotPasswordLink}>Don't have an account ?&nbsp;
         <Text style={{

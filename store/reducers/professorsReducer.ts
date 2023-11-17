@@ -1,5 +1,5 @@
 import { ProfessorState } from "../types"
-import { AUTHENTICATE_PROFESSOR_SUCCESS, AUTHENTICATE_PROFESSOR_FAILURE, AUTHENTICATE_PROFESSOR_REQUEST, ProfessorsActions } from "../actions/types"
+import { AUTHENTICATE_PROFESSOR_SUCCESS, AUTHENTICATE_PROFESSOR_FAILURE, AUTHENTICATE_PROFESSOR_REQUEST, ProfessorsActions, LOG_OUT_PROFESSOR } from "../actions/types"
 import { createReducer } from "../../utils/createReducer"
 const initialState : ProfessorState = {
     professor:
@@ -44,6 +44,13 @@ const professorReducer = {
             message
         }
     }),
+    [LOG_OUT_PROFESSOR]:
+        (state: ProfessorState,
+        { professor}) =>
+        ({
+            ...state,
+            professor,
+        })
 
 }
 export default (state = initialState, action: ProfessorsActions) => createReducer(professorReducer, state, action);

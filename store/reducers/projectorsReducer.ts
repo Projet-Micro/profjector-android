@@ -1,5 +1,5 @@
 import { ProjectorsState } from "../types"
-import { LOAD_PROJECTORS_FAILURE, LOAD_PROJECTORS_SUCCESS, LOAD_PROJECTORS_REQUEST, ProjectorsActions } from "../actions/types"
+import { LOAD_PROJECTORS_FAILURE, LOAD_PROJECTORS_SUCCESS, LOAD_PROJECTORS_REQUEST, ProjectorsActions, LOG_OUT_PROFESSOR } from "../actions/types"
 import { createReducer } from "../../utils/createReducer"
 const initialState : ProjectorsState = {
     projectors: [],

@@ -10,3 +10,6 @@ export function loadProjectors() {
 export function loadProfessor() {
     store.dispatch(actions.loadProfessor())
 }
+export function logOutProfessor() {
+    store.dispatch(actions.logOutProfessor())
+}
