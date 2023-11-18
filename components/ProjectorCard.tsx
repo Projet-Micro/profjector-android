@@ -6,8 +6,19 @@ import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import React, { useCallback, useState,useRef } from 'react';
 import DayBubble from "./DayBubble";
-import { getDay,getDayOfTheWeek } from "../utils/date";
-function ProjectorCard({ brand, serialNumber, nbrCables,status,selectProjector,isSelected}) {
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { getDay, getDayOfTheWeek } from "../utils/date";
+type ProjectorType = {
+    id: number,
+    serialNumber: number,
+    comment: string,
+}
+type RootStackParamList = {
+    BorrowModal: ProjectorType,
+    Home: undefined
+}
+type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+function ProjectorCard({ id, brand, comment, serialNumber, nbrCables,status,selectProjector,isSelected}) {
     return (
         <View style={styles.cardContainer}>
                 <View style={styles.titleContainer}>
@@ -15,8 +26,8 @@ function ProjectorCard({ brand, serialNumber, nbrCables,status,selectProjector,i
                         <Text style={styles.titleText}>Projector {serialNumber}</Text>
                     </View>
                     {status === 1 && <View>
-                        <TouchableOpacity onPress={() => selectProjector(serialNumber)}>
-                            <View style={styles.radio}>{(isSelected === serialNumber) && <Ionicons name="checkmark" size={20} color="white" />}</View>
+                        <TouchableOpacity onPress={() => selectProjector(id,serialNumber,comment)}>
+                            <View style={styles.radio}>{(isSelected.id === id) && <Ionicons name="checkmark" size={20} color="white" />}</View>
                         </TouchableOpacity>
                     </View>
                     }
@@ -44,29 +55,48 @@ function ProjectorCard({ brand, serialNumber, nbrCables,status,selectProjector,i
         </View>
    ) 
 }
-export default function ProjectorCards () {
+export default function ProjectorCards ({ navigation } : Props) {
     const projectors = useSelector((state: GlobalState) => state.projectors);
     const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    const [isSelected, setIsSelected] = useState<string>('');
+    const [isSelected, setIsSelected] = useState<ProjectorType>({
+        id: -1,
+        serialNumber: -1,
+        comment : '',
+    });
     const slideUpValue = useRef(new Animated.Value(0)).current;
       const slideUpAnimation = {
     transform: [
       {
         translateY: slideUpValue.interpolate({
           inputRange: [0, 1],
-          outputRange: [0,-15], // Adjust the range for the desired slide-up distance
-        }),
+          outputRange: [100,-15], // Adjust the range for the desired slide-up distance
+        }), 
       },
     ],
-  };
-    const selectProjector = useCallback((serialNumber:string) => {
-        setIsSelected(serialNumber)
+    };
+    const confirmSelectProjector = () => {
+
         Animated.timing(slideUpValue, {
-      toValue: 1,
-      duration: 100, // Adjust the duration as needed
-      useNativeDriver: true,
-    }).start();
-    
+        toValue: 0,
+        duration: 200, // Adjust the duration as needed
+        useNativeDriver: true,
+        }).start(() => {
+            navigation.navigate('BorrowModal',isSelected)
+            setIsSelected({
+        id: -1,
+        serialNumber: -1,
+        comment : '',
+    });
+        });
+
+    }
+    const selectProjector = useCallback((id: number, serialNumber: number, comment:string) => {
+        setIsSelected({id,serialNumber,comment})
+        Animated.timing(slideUpValue, {
+            toValue: 1,
+            duration: 200, // Adjust the duration as needed
+            useNativeDriver: true,
+        }).start();
     }, [])
     return (
     <View style={{height: '100%'}}>
@@ -76,9 +106,9 @@ export default function ProjectorCards () {
                     <Animated.View style={[styles.selectButtonAnimationContainer, slideUpAnimation]}>
                     <View style={styles.selectButtonContainer}>
                         <View style={styles.alignCenter}>
-                            <Text>Are you sure you want to select this projector ?</Text>
+                            <Text style={styles.selectedMessage}>Are you sure you want to select this projector ?</Text>
                         </View>
-                        <TouchableOpacity style={styles.alignCenter}>
+                        <TouchableOpacity style={styles.alignCenter} onPress={() => confirmSelectProjector()}>
                             <View style={styles.selectButton}>
                                 <Text style={styles.selectButtonText}>Select</Text>
                             </View>
@@ -97,7 +127,7 @@ export default function ProjectorCards () {
         />
         </View>
         
-                <Text style={{fontSize:25,fontWeight:'700',marginBottom:10,marginTop:35}}>All Projectors</Text>
+                <Text style={{fontSize:25,fontFamily:'MarkProBold',marginBottom:10,marginTop:35}}>All Projectors</Text>
         
         {
             projectors.loading ? 
@@ -144,7 +174,7 @@ const styles = StyleSheet.create({
     },
     titleText: {
         fontSize : 17,
-        fontWeight:'600'
+        fontFamily:'MarkProBold'
     },
     tagsContainer: {
         width: '100%',
@@ -168,7 +198,7 @@ const styles = StyleSheet.create({
     tagText: {
         textTransform: 'uppercase',
         color: 'white',
-        fontWeight: 'bold',
+        fontFamily:'MarkProBold',
         fontSize : 10,
     },
     projectorUnavailable: {
@@ -177,10 +207,6 @@ const styles = StyleSheet.create({
     projectorAvailable: {
         color : 'green'
     },
-    serialNumberStyling: {
-        fontSize: 17,
-        fontWeight: 'bold',
-    },
     cardContainer: {
         paddingTop: 15,
         paddingBottom: 15,
@@ -188,7 +214,6 @@ const styles = StyleSheet.create({
         borderColor: 'lightgray' 
     },
     radio: {
-        fontWeight: 'bold',
         backgroundColor: '#3536E6',
         color: 'white',
         flexDirection: 'row',
@@ -226,11 +251,16 @@ const styles = StyleSheet.create({
     },
     selectButtonText: {
         color: 'white',
-        fontWeight: 'bold',
+        fontFamily: 'MarkProBold',
         textTransform: 'uppercase'
     },
     alignCenter: {
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    selectedMessage: {
+        fontFamily: 'MarkPro',
+        lineHeight: 25,
+        fontSize:13
     }
 });

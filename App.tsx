@@ -8,7 +8,9 @@ import * as SplashScreen from 'expo-splash-screen'
 export default function App() {
     const [fontsLoaded] = useFonts({
     "MarkPro": require('./assets/fonts/markprofont.otf'),
-    "MarkProBold": require('./assets/fonts/markprofontbold.ttf')
+    "MarkProBold": require('./assets/fonts/markprofontbold.ttf'),
+    "MarkProLight": require('./assets/fonts/markprofontlight.ttf'),
+    "MarkProLightBit":require('./assets/fonts/markprofontlightbit.ttf')
   });
       async function prepare() {
       await SplashScreen.preventAutoHideAsync();

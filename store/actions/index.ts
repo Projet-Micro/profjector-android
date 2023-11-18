@@ -62,7 +62,6 @@ export function loadProfessor(): any {
     return async function (dispatch: ThunkDispatch<{}, {}, AnyAction>) {
         const stringProfessor = await AsyncStorage.getItem("token");
         if (stringProfessor) {
-            console.log("INTO LOAD", stringProfessor);
             dispatch(authenticateProfessorRequest());
             let professor = JSON.parse(stringProfessor)
             dispatch(authenticateProfessorSuccess(professor))           
@@ -73,7 +72,6 @@ export function loadProjectors(): any{
     return async function (dispatch : ThunkDispatch<{},{},AnyAction>) {
         dispatch(loadProjectorsRequest());
         const token = await tokenParse();
-        console.log(token);
         (await api()).get(`/projectors`)
             .then(projectors => {
                 console.log("WORKS")

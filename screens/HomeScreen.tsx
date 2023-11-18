@@ -1,10 +1,21 @@
 import React from 'react'
 import { View,StyleSheet } from 'react-native'
 import ProjectorCards from '../components/ProjectorCard';
-export default function Home() {
+type ProjectorInfo = {
+  id: number,
+  serialNumber: number,
+  comment: string,
+}
+type MainStackParamList = {
+    BorrowModal: ProjectorInfo,
+    Home : undefined
+}
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+type Props = NativeStackScreenProps<MainStackParamList, 'Home'>;
+export default function Home({ navigation,route } : Props) {
     return (
         <View style={styles.container}>
-            <ProjectorCards></ProjectorCards>
+            <ProjectorCards navigation={navigation} route={route}></ProjectorCards>
         </View>
     )
 }
