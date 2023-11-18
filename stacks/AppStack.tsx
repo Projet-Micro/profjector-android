@@ -1,7 +1,20 @@
-import {createStackNavigator} from '@react-navigation/stack';
+import { createStackNavigator } from '@react-navigation/stack';
 import Home from '../screens/HomeScreen';
-import { View , StyleSheet,Text } from 'react-native'
-const Stack = createStackNavigator();
+import { View, StyleSheet, Text } from 'react-native'
+type ProjectorInfo = {
+    id: number,
+    serialNumber: number,
+    comment: string,
+}
+type RootStackParamList = {
+  Main: undefined,
+  BorrowModal: ProjectorInfo,
+}
+type MainStackParamList = {
+  Home: undefined,
+  borrowModal: ProjectorInfo,
+}
+const RootStack = createStackNavigator<RootStackParamList>();
 import { useEffect } from 'react';
 import { loadProjectors, logOutProfessor } from '../index';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -9,29 +22,31 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useSelector } from 'react-redux';
 import { getFirstLetter } from '../utils/getFirstLetter';
 import { GlobalState } from '../store/types';
-  const MainStack = createStackNavigator();
+import BorrowModalScreen from '../screens/BorrowModalScreen';
+const MainStack = createStackNavigator<MainStackParamList>();
+    const logOut = () => {
+    AsyncStorage.clear();
+    logOutProfessor()
+  }
 export const AppStack = () => {
     useEffect(() => {
       loadProjectors();
     }, [])
-  const logOut = () => {
-    AsyncStorage.clear();
-    logOutProfessor()
-  }
+
 
   return (
-    <Stack.Navigator>
-      <Stack.Screen 
-      name="Main" 
-      component={MainStackScreen}/>
-    </Stack.Navigator>
+    <RootStack.Navigator>
+      <RootStack.Screen name="Main" component={ MainStackScreen } options={{ headerShown: false }} />
+      <RootStack.Screen name="BorrowModal" component={ BorrowModalScreen } options={{ presentation: 'modal',headerShown: false }} />
+    </RootStack.Navigator>
   );
 };
 const MainStackScreen = () => {
     const professor = useSelector((state: GlobalState) => state.professors.professor.professorInfo);
   return (
     <MainStack.Navigator>
-      <MainStack.Screen name="Home" component={Home}   options={{ headerTitleAlign:"left",
+      <MainStack.Screen name="Home" component={Home} options={{
+        headerTitleAlign: "left",
       headerTintColor :'#3536E6',
       headerRight:() =>
       {
@@ -39,7 +54,7 @@ const MainStackScreen = () => {
         <View style={styles.shape}>
         </View>
         <View>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => logOut()}>
               <View style={styles.avatarContainer}>
                 <Text style={styles.avatarText}>{getFirstLetter(professor?.firstName)}</Text></View>
           </TouchableOpacity>
@@ -85,6 +100,6 @@ const styles = StyleSheet.create({
   avatarText: {
     color: 'white',
     fontSize: 15,
-    fontWeight: 'bold'
+    fontFamily:'MarkProBold'
   }
 });

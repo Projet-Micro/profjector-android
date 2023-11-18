@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     numText: {
         fontSize: 15,
         textAlign: 'center',
-        fontWeight: 'bold',
+        fontFamily: 'MarkProBold',
         color: '#3536E6'
     },
     selectedBubbleContainer: {
