@@ -7,7 +7,9 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { Credentials } from '../../shared/models';
 import { ToastAndroid } from 'react-native'
 import api from '../../utils/api'
-import { tokenParse } from '../../utils/tokenParse';
+import { Device } from 'react-native-ble-plx';
+import store from '..';
+
 export function loadProjectorsSuccess(projectors : Projector[]) : actionsTypes.ProjectorsActions {
     return {
         type: actionsTypes.LOAD_PROJECTORS_SUCCESS,
@@ -69,10 +71,10 @@ export function loadProfessor(): any {
     }
 }
 export function loadProjectors(): any{
-    return async function (dispatch : ThunkDispatch<{},{},AnyAction>) {
+    return async function (dispatch: ThunkDispatch<{}, {}, AnyAction>) {
+        const professor = store.getState().professors.professor.professorInfo
         dispatch(loadProjectorsRequest());
-        const token = await tokenParse();
-        (await api()).get(`/projectors`)
+        (await api(professor.accessToken)).get(`/projectors/all/${professor.id}`)
             .then(projectors => {
                 console.log("WORKS")
                 dispatch(loadProjectorsSuccess(projectors.data))
@@ -83,7 +85,7 @@ export function loadProjectors(): any{
             })
     }
 }
-export function logOutProfessor() : actionsTypes.ProfessorsActions{
+export function logOutProfessor() : actionsTypes.LogOutProfessor{
     return {
         type: actionsTypes.LOG_OUT_PROFESSOR,
         professor:
@@ -92,5 +94,23 @@ export function logOutProfessor() : actionsTypes.ProfessorsActions{
             loading: false,
             message: '',
         }
+    }
+}
+export function registerDevice(device : Device): actionsTypes.RegisterDevice{
+    return {
+        type: actionsTypes.REGISTER_DEVICE,
+        device
+    }   
+}
+export function unregisterDevice(device: Device): actionsTypes.UnregisterDevice{
+    return {
+        type: actionsTypes.UNREGISTER_DEVICE,
+        device
+    }
+}
+export function connectDevice(device: Device): actionsTypes.ConnectDevice{
+    return {
+        type: actionsTypes.CONNECT_DEVICE,
+        device
     }
 }

@@ -1,17 +1,18 @@
 import React from 'react'
 import { View,StyleSheet } from 'react-native'
 import ProjectorCards from '../components/ProjectorCard';
-type ProjectorInfo = {
-  id: number,
-  serialNumber: number,
-  comment: string,
+type ProjectorType = {
+    id: number,
+    serialNumber: number,
+    comment: string,
+    rent: boolean,
 }
-type MainStackParamList = {
-    BorrowModal: ProjectorInfo,
+type RootStackParamList = {
+    BorrowModal: ProjectorType,
     Home : undefined
 }
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-type Props = NativeStackScreenProps<MainStackParamList, 'Home'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 export default function Home({ navigation,route } : Props) {
     return (
         <View style={styles.container}>
@@ -23,8 +24,9 @@ const styles = StyleSheet.create({
     container: 
     {
         flex: 1,
-        backgroundColor: '#eaeaa',
-        padding: 20,
+        backgroundColor: '#FAFAFA',
+        paddingTop: 20,
+        paddingBottom: 20,
     },
     nav: 
     {

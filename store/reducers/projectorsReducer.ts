@@ -4,7 +4,8 @@ import { createReducer } from "../../utils/createReducer"
 const initialState : ProjectorsState = {
     projectors: [],
     message: '',
-    loading : false,
+    loading: false,
+    borrowedProjector: null,
 } 
 const projectorsReducer = {
     [LOAD_PROJECTORS_REQUEST]: (state: ProjectorsState[]) =>
@@ -29,6 +30,7 @@ const projectorsReducer = {
         projectors: [],
         message,
         loading: false,
-    })
+    }),
+    
 }
 export default (state = initialState, action: ProjectorsActions) => createReducer(projectorsReducer, state, action);

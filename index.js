@@ -3,11 +3,17 @@ import {
     authenticateProfessor,
     loadProjectors,
     loadProfessor,
-    logOutProfessor
+    logOutProfessor,
+    registerDevice,
+    unregisterDevice,
+    connectDevice
 } from './store/dispatcher'
 export {
     authenticateProfessor,
     loadProjectors,
     loadProfessor,
-    logOutProfessor
+    logOutProfessor,
+    registerDevice,
+    unregisterDevice,
+    connectDevice
 };

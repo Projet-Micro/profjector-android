@@ -1,17 +1,35 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
-import { View, Text, StyleSheet, Image } from "react-native"
+import { View, Text, StyleSheet, Image,ActivityIndicator } from "react-native"
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { TouchableOpacity } from "react-native-gesture-handler";
-type ProjectorInfo = {
-  id: number,
-  serialNumber: number,
-  comment: string,
-}
+import useBLE from "../hooks/useBLE";
+import { useSelector } from "react-redux";
+import { GlobalState } from "../store/types";
+import { ProjectorInfo } from "../shared/models";
+import { connectDevice } from "../index";
 type RootStackParamList = {
-    BorrowModal: ProjectorInfo
+    BorrowModal: ProjectorInfo,
+    Home : undefined
 }
 type Props = NativeStackScreenProps<RootStackParamList,'BorrowModal'>
-export default function BorrowModalScreen({ route } : Props) {
+export default function BorrowModalScreen({ route, navigation }: Props) {
+    const devices = useSelector((state: GlobalState) => state.devices)
+    const professor = useSelector((state: GlobalState) => state.professors.professor.professorInfo)
+    const { connectToDevice,writePayload } = useBLE();
+    const borrowProjector = async () => {
+        connectDevice(devices.devices[0]);
+        await connectToDevice(devices.devices[0]);
+        if (professor) {
+            writePayload(devices.devices[0],route.params.id,professor.id,professor.accessToken,navigation,route.params.rent)
+        }
+    }
+    const returnProjector = async () => {
+        connectDevice(devices.devices[0]);
+        await connectToDevice(devices.devices[0]);
+        if (professor) {
+            writePayload(devices.devices[0],route.params.id,professor.id,professor.accessToken,navigation,route.params.rent)
+        }
+    }   
     return (
         <View style={styles.container}>
             <View style={styles.ellipseContainer}>
@@ -22,15 +40,21 @@ export default function BorrowModalScreen({ route } : Props) {
             <View style={[styles.dotContainer,styles.ellipse4]}></View>
             <View style={[styles.dotContainer,styles.ellipse5]}></View> 
             <View style={styles.logoContainer}>
-                <Image style={styles.imageLogo} source={require('../assets/images/vector-projector.png')}/>
+                <Image style={styles.imageLogo} source={route.params.rent === false ? require('../assets/images/vector-projector.png') : require('../assets/images/return-projector.png')}/>
             </View>
             <View style={styles.informationContainer}>
                 <View>
-                    <Text style={styles.title}>Borrow the projector {route.params.serialNumber}</Text>
+                    <Text style={styles.title}>
+                        {(route.params.rent === false
+                            ? "Borrow the projector "
+                            : "Return the projector ") + route.params.serialNumber}</Text>
                 </View>
                 <View>
                     <Text style={styles.description}>
-                        Find the perfect projector for your needs. Check availability and make your reservation. Borrowing a projector has never been easier!
+                        {route.params.rent === false
+                            ? "Find the perfect projector for your needs. Check availability and make your reservation. Borrowing a projector has never been easier!"
+                            : "Easily return your projector with a simple process. Check availability, initiate the return, and enjoy the convenience of hassle-free projector returns!"
+                        }
                     </Text>
                 </View>
                 <View style={styles.messageContainer}>
@@ -42,11 +66,19 @@ export default function BorrowModalScreen({ route } : Props) {
                 </View>
                 <View style={styles.divider} />
                     <View style={{width:'100%'}}>
-                    <TouchableOpacity onPress={() => { }} style={styles.touchableContainer}>
+                    {devices.devices.length > 0 && route.params.rent === false ? <TouchableOpacity disabled={!devices.loading ? false : true} onPress={() => borrowProjector()} style={styles.touchableContainer}>
                         <View style={styles.borrowButton}>
-                            <Ionicons name="logo-dropbox" size={20} color="#442FFF" /><Text style={styles.borrowText}>BORROW NOW !</Text>
+                            {!devices.loading && <Ionicons name="logo-dropbox" size={20} color="#442FFF" />}<Text style={styles.borrowText}>{!devices.loading ? 'BORROW NOW' : <ActivityIndicator size="small" color="#442FFF" />}</Text>
+                        </View>
+                    </TouchableOpacity>
+                    :
+                    devices.devices.length > 0 && route.params.rent === true ? <TouchableOpacity disabled={!devices.loading ? false : true} onPress={() => returnProjector()} style={styles.touchableContainer}>
+                        <View style={styles.borrowButton}>
+                            {!devices.loading && <Ionicons name="cube" size={20} color="#442FFF" />}<Text style={styles.borrowText}>{!devices.loading ? 'RETURN NOW' : <ActivityIndicator size="small" color="#442FFF" />}</Text>
                         </View> 
                     </TouchableOpacity>
+                    : null
+                    }
             </View>
             </View>
         </View>

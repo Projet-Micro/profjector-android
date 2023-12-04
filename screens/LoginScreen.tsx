@@ -183,7 +183,7 @@ export function Login() {
         </View>
         {!professor.loading ? <TouchableOpacity onPress={submitCredentials} style={{ marginTop:40 }}>
           <View style={styles.submitButtonContainer}>
-            <Text style={styles.submitButtonText}>Login</Text>
+            <Text style={styles.submitButtonText}>LOGIN</Text>
           </View>
           </TouchableOpacity>
             :
@@ -250,10 +250,10 @@ const styles = StyleSheet.create({
   },
   submitButtonContainer: {
     backgroundColor: '#3536E6',
-    padding: 25,
+    padding: 15,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 10
+    borderRadius: 30
   },
   submitButtonText: {
     color: 'white',

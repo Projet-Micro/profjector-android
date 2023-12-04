@@ -1,11 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import Home from '../screens/HomeScreen';
 import { View, StyleSheet, Text } from 'react-native'
-type ProjectorInfo = {
-    id: number,
-    serialNumber: number,
-    comment: string,
-}
+import { ProjectorInfo } from '../shared/models';
 type RootStackParamList = {
   Main: undefined,
   BorrowModal: ProjectorInfo,
