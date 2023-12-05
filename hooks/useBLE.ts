@@ -29,8 +29,8 @@ function useBLE(): BluetoothLowEnergyApi {
   const SERVICE_UUID = "19B10000-E8F2-537E-4F6C-D104768A1214";
   const characteristicUUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
   let str: string = '';
-  let bleManager = new BleManager();
- const requestAndroid31Permissions = async () => {
+  var bleManager : BleManager;
+  const requestAndroid31Permissions = async () => {
     const bluetoothScanPermission = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.BLUETOOTH_SCAN,
       {
@@ -85,28 +85,29 @@ function useBLE(): BluetoothLowEnergyApi {
       return true;
     }
   };
-  const scanForPeripherals = () =>
+  const scanForPeripherals = () => {
+    bleManager = new BleManager();
     bleManager.startDeviceScan(null, null, (error, device) => {
       if (error) {
         console.log(error);
       }
       console.log(allDevices.devices);
-      if (device && device.name?.includes("ESP") && allDevices.devices.filter(dev => dev.id == device.id).length == 0 ) {
-          console.log("TEST");
-          registerDevice(device);
-          bleManager.stopDeviceScan();
-          bleManager.destroy();
+      if (device && device.name?.includes("ESP") && allDevices.devices.filter(dev => dev.id == device.id).length == 0) {
+        console.log("TEST");
+        registerDevice(device);
+        bleManager.stopDeviceScan();
+        bleManager.destroy();
       }
     
     });
-
+  }
   const connectToDevice = async (device: Device) => {
-    bleManager = new BleManager()
     console.log(allDevices.devices);
     console.log("-----------------------------------------------")
     console.log(allDevices.connectedDevice);
+    bleManager = new BleManager();
     try {
-      const deviceConnection = await bleManager.connectToDevice(allDevices.devices[0].id);
+      const deviceConnection = await bleManager.connectToDevice(device.id);
       await deviceConnection.discoverAllServicesAndCharacteristics();
     } catch {
       console.log("FAILED TO CONNECT");
@@ -120,6 +121,7 @@ function useBLE(): BluetoothLowEnergyApi {
     } catch {
       console.log("COULD NOT DISCONNECT");
     }  
+      bleManager.destroy();
       unregisterDevice(device);
   };
 
@@ -132,12 +134,16 @@ function useBLE(): BluetoothLowEnergyApi {
         if (str[str.length - 1] == '#') {
           console.log(str);
           const response = JSON.parse(str.split('#')[0]);
-          if (response && response.response.status == 200) {
+          console.log(response);
+          if (response && response.status === 200) {
+            console.log("ENTERED200");
+            console.log(response.response);
             disconnectFromDevice(device).then(() => {
               loadProjectors();
             })
           }
-          else if (response && response.response.status != 200) {
+          else if (response && response.status !== 200) {
+            console.log(response.response);
             disconnectFromDevice(device).then(() => {
               ToastAndroid.showWithGravity(response.response.message, ToastAndroid.SHORT, ToastAndroid.BOTTOM);
             })

@@ -37,18 +37,19 @@ function ProjectorCard({ id, brand, comment, serialNumber, nbrCables, status, re
                     <View>
                         <Text style={[styles.titleText, rent === true ? { color: '#FAFAFA' } : {}]}>Projector {serialNumber}</Text>
                     </View>
-                {(rent === false && !!projectors.find(projector => projector.rent === true) === false) ? <View>
-                        <TouchableOpacity onPress={() => selectProjector(id,serialNumber,comment)}>
+                {(rent === false && !!projectors.find(projector => projector.rent === true) === false) && status === 0 ? <View>
+                        <TouchableOpacity onPress={() => selectProjector(id,serialNumber,comment,rent)}>
                             <View style={styles.radio}>{(isSelected.id === id) && <Ionicons name="checkmark" size={20} color="white" />}</View>
                         </TouchableOpacity>
                     </View>
-                        :
+                        : (rent === true ) ? 
                     <View>
                         <TouchableOpacity onPress={() => selectProjector(id,serialNumber,comment,rent)}>
                             <View style={[styles.radio,{backgroundColor : "white"}]}>{(isSelected.id === id) && <Ionicons name="checkmark" size={20} color="#3536e6" />}</View>
                         </TouchableOpacity>
                     </View>
-                    }
+                : null    
+                }
                 </View>
                 <View style={styles.tagsContainer}>
                     <View style={[styles.tagStyling, rent === true ? { backgroundColor: 'white' } : {}]}>
