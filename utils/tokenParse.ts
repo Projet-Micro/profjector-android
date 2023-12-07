@@ -8,6 +8,5 @@ export async function tokenParse() : Promise<string | null>
     let token : string = '';
     if (item)
         token = JSON.parse(item).accessToken;
-    console.log(token);
     return token;
 }

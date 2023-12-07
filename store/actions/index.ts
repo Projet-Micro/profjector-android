@@ -2,10 +2,9 @@ import { ThunkDispatch } from 'redux-thunk'
 import { AnyAction } from 'redux'
 import * as actionsTypes from './types';
 import axios from 'axios'
-import { Message, Professor, Projector } from '../types'
+import { Professor, Projector } from '../types'
 import AsyncStorage from '@react-native-community/async-storage';
 import { Credentials } from '../../shared/models';
-import { ToastAndroid } from 'react-native'
 import api from '../../utils/api'
 import { Device } from 'react-native-ble-plx';
 import store from '..';
@@ -50,7 +49,6 @@ export function authenticateProfessor(credentials: Credentials): any{
         dispatch(authenticateProfessorRequest());
         axios.post(`${process.env.EXPO_PUBLIC_API_URL}/users/login`, credentials)
             .then(async professor => {
-                console.log(professor.data);
                 dispatch(authenticateProfessorSuccess(professor.data))
                 await AsyncStorage.setItem("token", JSON.stringify(professor.data))
             })
@@ -80,12 +78,10 @@ export function loadProjectors(): any{
         dispatch(loadProjectorsRequest());
         (await api(professor.accessToken)).get(`/projectors/all/${professor.id}`)
             .then(projectors => {
-                console.log("WORKS")
                 dispatch(loadProjectorsSuccess(projectors.data))
             })
             .catch(error => {
                 dispatch(loadProjectorsFailure(error.message))
-                console.log(error);
             })
     }
 }
@@ -127,7 +123,6 @@ export function toggleBluetooth(isBluetoothActivated: boolean): actionsTypes.Tog
 
 }    
 export function addMessage(id:number,text:string,status:string): actionsTypes.AddMessage{
-    console.log(id)
     return {
         type: actionsTypes.ADD_MESSAGE,
         message: {

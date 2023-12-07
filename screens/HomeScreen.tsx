@@ -1,7 +1,6 @@
 import React from 'react'
 import { View,StyleSheet } from 'react-native'
 import ProjectorCards from '../components/ProjectorCard';
-import Toast from '../components/Toast';
 type ProjectorType = {
     id: number,
     serialNumber: number,
@@ -21,7 +20,6 @@ export default function Home({ navigation,route } : Props) {
         <Provider store={store}>
         <View style={styles.container}>
             <ProjectorCards navigation={navigation} route={route}></ProjectorCards>
-            <Toast></Toast>
         </View>
         </Provider>
     )

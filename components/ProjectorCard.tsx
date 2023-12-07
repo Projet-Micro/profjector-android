@@ -125,7 +125,6 @@ export default function ProjectorCards({ navigation }: Props) {
             bleManager.state().then(state => { bleManager.destroy();return  state === "PoweredOn" }).then(async(isEnabled) => {
                 if (isPermissionsEnabled && isEnabled) {
                     await scanForDevices();
-                    console.log(projectors);
                     navigation.navigate('BorrowModal', isSelected)
                 }
                 else {

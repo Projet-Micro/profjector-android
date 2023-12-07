@@ -60,7 +60,6 @@ export function Login() {
     }
   }
   const submitCredentials = () => {
-    console.log(credentials.password.password.length);
     if (credentials.password.password.length === 0) {
       setCredentials((prev : LoginForm)=> {
         return {
@@ -85,7 +84,6 @@ export function Login() {
         }
       })
     }
-    console.log(credentials)
     authenticateProfessor({
       email:credentials.email.email,
       PSW:credentials.password.password

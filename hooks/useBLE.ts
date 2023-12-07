@@ -90,29 +90,23 @@ function useBLE(): BluetoothLowEnergyApi {
     bleManager = new BleManager();
         let state : string = await bleManager.state();
     let isWorking = (state === "PoweredOn");
-    console.log(isWorking);
     toggleBluetooth(isWorking);
     bleManager.onStateChange(state => {
 
       if (state === "PoweredOn" && !isWorking) {
         isWorking = true;
-        console.log(state);
         toggleBluetooth(isWorking);
       }
       else if (state !== "PoweredOn" && isWorking)
       {
         isWorking = false;
-        console.log(state);
         toggleBluetooth(isWorking);
       }
     })
     bleManager.startDeviceScan(null, null, (error, device) => {
       if (error) {
-        console.log(error);
       }
-      console.log(allDevices.devices);
       if (device && device.name?.includes("ESP") && allDevices.devices.filter(dev => dev.id == device.id).length == 0) {
-        console.log("TEST");
         registerDevice(device);
         bleManager.stopDeviceScan();
       }
@@ -122,9 +116,6 @@ function useBLE(): BluetoothLowEnergyApi {
   const connectToDevice = async (device: Device) => {
     if (bleManager)
       bleManager.destroy();
-    console.log(allDevices.devices);
-    console.log("-----------------------------------------------")
-    console.log(allDevices.connectedDevice);
     bleManager = new BleManager();
     try {
       const deviceConnection = await bleManager.connectToDevice(device.id);
@@ -135,11 +126,9 @@ function useBLE(): BluetoothLowEnergyApi {
   };
 
   const disconnectFromDevice =async(device : Device) => {
-    console.log('GOT IN');
     try {
       await bleManager.cancelDeviceConnection(device.id);
     } catch {
-      console.log("[COULD NOT DISCONNECT]")
     }  
       bleManager.destroy();
       unregisterDevice(device);
@@ -149,22 +138,16 @@ function useBLE(): BluetoothLowEnergyApi {
     bleManager.monitorCharacteristicForDevice(device.id, SERVICE_UUID, characteristicUUID, (error, characteristic) => {
       if (characteristic?.value) {
         const data: string = atob(characteristic?.value);
-        console.log(data);
         str = str + data;
         if (str[str.length - 1] == '#') {
-          console.log(str);
           const response = JSON.parse(str.split('#')[0]);
-          console.log(response);
           if (response && response.status === 200) {
-            console.log("ENTERED200");
-            console.log(response.response);
             disconnectFromDevice(device).then(() => {
               loadProjectors();
               addMessage(generateId(),response.response.message, "success");
             })
           }
           else if (response && response.status !== 200) {
-            console.log(response.response);
             disconnectFromDevice(device).then(() => {
               addMessage(generateId(), "Unable to connect. Try Again !", "danger");
             })
@@ -204,9 +187,8 @@ function useBLE(): BluetoothLowEnergyApi {
         rent
       })
     }
-    console.log(jsonString);
+
     const data = btoa(jsonString);
-    console.log("WRITING")
       await device.writeCharacteristicWithResponseForService(
         SERVICE_UUID,
         characteristicUUID,
