@@ -2,14 +2,14 @@ import { ThunkDispatch } from 'redux-thunk'
 import { AnyAction } from 'redux'
 import * as actionsTypes from './types';
 import axios from 'axios'
-import { Professor, Projector } from '../types'
+import { Message, Professor, Projector } from '../types'
 import AsyncStorage from '@react-native-community/async-storage';
 import { Credentials } from '../../shared/models';
 import { ToastAndroid } from 'react-native'
 import api from '../../utils/api'
 import { Device } from 'react-native-ble-plx';
 import store from '..';
-
+import { generateId } from '../../utils/generateId';
 export function loadProjectorsSuccess(projectors : Projector[]) : actionsTypes.ProjectorsActions {
     return {
         type: actionsTypes.LOAD_PROJECTORS_SUCCESS,
@@ -55,7 +55,7 @@ export function authenticateProfessor(credentials: Credentials): any{
                 await AsyncStorage.setItem("token", JSON.stringify(professor.data))
             })
             .catch(error => {
-                ToastAndroid.showWithGravity(error.response.data.message, 2000, ToastAndroid.BOTTOM);
+                dispatch(addMessage(generateId(),error.response.data.message,"danger"));
                 dispatch(authenticateProfessorFailure(error.response.data.message));
             })   
     }
@@ -67,6 +67,10 @@ export function loadProfessor(): any {
             dispatch(authenticateProfessorRequest());
             let professor = JSON.parse(stringProfessor)
             dispatch(authenticateProfessorSuccess(professor))           
+        }
+        else
+        {
+            dispatch(authenticateProfessorFailure(''))
         }
     }
 }
@@ -112,5 +116,30 @@ export function connectDevice(device: Device): actionsTypes.ConnectDevice{
     return {
         type: actionsTypes.CONNECT_DEVICE,
         device
+    }
+
+}
+export function toggleBluetooth(isBluetoothActivated: boolean): actionsTypes.ToggleBluetooth{
+    return {
+        type: actionsTypes.TOGGLE_BLUETOOTH,
+        isBluetoothActivated
+    }   
+
+}    
+export function addMessage(id:number,text:string,status:string): actionsTypes.AddMessage{
+    console.log(id)
+    return {
+        type: actionsTypes.ADD_MESSAGE,
+        message: {
+            id,
+            text,
+            status
+        }
+    }
+}
+export function deleteMessage(id: number): actionsTypes.DeleteMessage{
+    return {
+        type: actionsTypes.DELETE_MESSAGE,
+        id
     }
 }

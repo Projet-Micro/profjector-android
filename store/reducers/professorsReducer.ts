@@ -5,7 +5,7 @@ const initialState : ProfessorState = {
     professor:
     {
         professorInfo: null,
-        loading: false,
+        loading: true,
         message: '',
     }
 }

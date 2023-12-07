@@ -7,7 +7,8 @@ import {
 import * as ExpoDevice from "expo-device";
 import { useSelector } from "react-redux";
 import { GlobalState } from "../store/types";
-import {  loadProjectors, registerDevice } from '../index'
+import { loadProjectors, registerDevice, toggleBluetooth, addMessage } from '../index'
+import { generateId } from "../utils/generateId";
 import { unregisterDevice } from "../index";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 import { encode as btoa,decode as atob } from 'base-64'
@@ -85,8 +86,26 @@ function useBLE(): BluetoothLowEnergyApi {
       return true;
     }
   };
-  const scanForPeripherals = () => {
+  const scanForPeripherals = async() => {
     bleManager = new BleManager();
+        let state : string = await bleManager.state();
+    let isWorking = (state === "PoweredOn");
+    console.log(isWorking);
+    toggleBluetooth(isWorking);
+    bleManager.onStateChange(state => {
+
+      if (state === "PoweredOn" && !isWorking) {
+        isWorking = true;
+        console.log(state);
+        toggleBluetooth(isWorking);
+      }
+      else if (state !== "PoweredOn" && isWorking)
+      {
+        isWorking = false;
+        console.log(state);
+        toggleBluetooth(isWorking);
+      }
+    })
     bleManager.startDeviceScan(null, null, (error, device) => {
       if (error) {
         console.log(error);
@@ -96,12 +115,13 @@ function useBLE(): BluetoothLowEnergyApi {
         console.log("TEST");
         registerDevice(device);
         bleManager.stopDeviceScan();
-        bleManager.destroy();
       }
     
     });
   }
   const connectToDevice = async (device: Device) => {
+    if (bleManager)
+      bleManager.destroy();
     console.log(allDevices.devices);
     console.log("-----------------------------------------------")
     console.log(allDevices.connectedDevice);
@@ -110,7 +130,7 @@ function useBLE(): BluetoothLowEnergyApi {
       const deviceConnection = await bleManager.connectToDevice(device.id);
       await deviceConnection.discoverAllServicesAndCharacteristics();
     } catch {
-      console.log("FAILED TO CONNECT");
+       addMessage(generateId(), "Failed to connect! Please try again !", "danger");
     }
   };
 
@@ -119,7 +139,7 @@ function useBLE(): BluetoothLowEnergyApi {
     try {
       await bleManager.cancelDeviceConnection(device.id);
     } catch {
-      console.log("COULD NOT DISCONNECT");
+      console.log("[COULD NOT DISCONNECT]")
     }  
       bleManager.destroy();
       unregisterDevice(device);
@@ -140,12 +160,13 @@ function useBLE(): BluetoothLowEnergyApi {
             console.log(response.response);
             disconnectFromDevice(device).then(() => {
               loadProjectors();
+              addMessage(generateId(), "Projector borrowed Successfully !", "success");
             })
           }
           else if (response && response.status !== 200) {
             console.log(response.response);
             disconnectFromDevice(device).then(() => {
-              ToastAndroid.showWithGravity(response.response.message, ToastAndroid.SHORT, ToastAndroid.BOTTOM);
+              addMessage(generateId(), "Unable to connect. Try Again !", "danger");
             })
           }
           str = "";

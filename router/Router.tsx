@@ -9,7 +9,7 @@ export const Router = () =>
 {
     const professor = useSelector((state: GlobalState) => state.professors.professor.professorInfo);
     useEffect(() =>
-    { 
+    {  
         console.log(professor)
         loadProfessor();
     },[])

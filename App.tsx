@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import store from './store/index'
 import { useFonts } from 'expo-font'
 import * as SplashScreen from 'expo-splash-screen'
+import Toast from './components/Toast';
 export default function App() {
     const [fontsLoaded] = useFonts({
     "MarkPro": require('./assets/fonts/markprofont.otf'),
@@ -28,6 +29,7 @@ export default function App() {
   return (
     <Provider store={store}>
         <Router></Router>
+        <Toast></Toast>
     </Provider>
   );
 }

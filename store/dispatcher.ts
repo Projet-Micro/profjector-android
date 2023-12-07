@@ -23,3 +23,12 @@ export function unregisterDevice(device: Device): void {
 export function connectDevice(device: Device): void {
     store.dispatch(actions.connectDevice(device))
 }
+export function toggleBluetooth(isBluetoothActivated: boolean): void{
+    store.dispatch(actions.toggleBluetooth(isBluetoothActivated))
+}
+export function addMessage(id : number,text : string,status : string): void{
+    store.dispatch(actions.addMessage(id, text, status))
+}
+export function deleteMessage(id: number): void {
+    store.dispatch(actions.deleteMessage(id));
+}

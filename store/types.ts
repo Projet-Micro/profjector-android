@@ -37,10 +37,20 @@ export type ProjectorsState = {
 export type DeviceState = {
     devices: Device[],
     connectedDevice: null | Device,
-    loading : boolean
+    loading: boolean,
+    isBluetoothActivated: boolean,
+}
+export type Message = {
+    id: number,
+    text: string;
+    status: string;
+}
+export type MessagesState = {
+    messages: Message[]
 }
 export type GlobalState = {
     projectors: ProjectorsState,
     professors: ProfessorState,
-    devices: DeviceState
+    devices: DeviceState,
+    messages: MessagesState
 }

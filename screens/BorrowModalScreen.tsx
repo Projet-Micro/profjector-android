@@ -32,8 +32,7 @@ export default function BorrowModalScreen({ route, navigation }: Props) {
     }   
     return (
         <View style={styles.container}>
-            <View style={styles.ellipseContainer}>
-            </View>
+            <View style={styles.ellipseContainer}></View>
             <View style={[styles.dotContainer,styles.ellipse1]}></View>
             <View style={[styles.dotContainer,styles.ellipse2]}></View>
             <View style={[styles.dotContainer,styles.ellipse3]}></View>
@@ -66,13 +65,13 @@ export default function BorrowModalScreen({ route, navigation }: Props) {
                 </View>
                 <View style={styles.divider} />
                     <View style={{width:'100%'}}>
-                    {devices.devices.length > 0 && route.params.rent === false ? <TouchableOpacity disabled={!devices.loading ? false : true} onPress={() => borrowProjector()} style={styles.touchableContainer}>
+                    {devices.devices.length > 0 && route.params.rent === false && devices.isBluetoothActivated ? <TouchableOpacity disabled={!devices.loading ? false : true} onPress={() => borrowProjector()} style={styles.touchableContainer}>
                         <View style={styles.borrowButton}>
                             {!devices.loading && <Ionicons name="logo-dropbox" size={20} color="#442FFF" />}<Text style={styles.borrowText}>{!devices.loading ? 'BORROW NOW' : <ActivityIndicator size="small" color="#442FFF" />}</Text>
                         </View>
                     </TouchableOpacity>
                     :
-                    devices.devices.length > 0 && route.params.rent === true ? <TouchableOpacity disabled={!devices.loading ? false : true} onPress={() => returnProjector()} style={styles.touchableContainer}>
+                    devices.devices.length > 0 && route.params.rent === true  && devices.isBluetoothActivated ? <TouchableOpacity disabled={!devices.loading ? false : true} onPress={() => returnProjector()} style={styles.touchableContainer}>
                         <View style={styles.borrowButton}>
                             {!devices.loading && <Ionicons name="cube" size={20} color="#442FFF" />}<Text style={styles.borrowText}>{!devices.loading ? 'RETURN NOW' : <ActivityIndicator size="small" color="#442FFF" />}</Text>
                         </View> 

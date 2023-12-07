@@ -1,5 +1,5 @@
 import { View,StyleSheet,Text, Animated } from "react-native"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { GlobalState } from "../store/types"
 import Suspense from "./Suspense";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
@@ -11,6 +11,9 @@ import { getDay, getDayOfTheWeek } from "../utils/date";
 import useBLE from "../hooks/useBLE";
 import LinearGradient from 'react-native-linear-gradient'
 import { swapRentedToFirst } from "../utils/swapRentedToFirst";
+import { generateId } from "../utils/generateId";
+import { addMessage } from "../store/actions/index";
+import { BleManager } from "react-native-ble-plx";
 type ProjectorType = {
     id: number,
     serialNumber: number,
@@ -85,14 +88,12 @@ function ProjectorCard({ id, brand, comment, serialNumber, nbrCables, status, re
         </LinearGradient>
    ) 
 }
-export default function ProjectorCards ({ navigation } : Props) {
+export default function ProjectorCards({ navigation }: Props) {
+    const dispatch = useDispatch();
     const projectors = useSelector((state: GlobalState) => state.projectors);
     const { requestPermissions, scanForPeripherals } = useBLE();
     const scanForDevices = async () => {
-        const isPermissionsEnabled = await requestPermissions();
-        if (isPermissionsEnabled) {
         scanForPeripherals();
-        }
   };
     const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     const [isSelected, setIsSelected] = useState<ProjectorType>({
@@ -118,16 +119,26 @@ export default function ProjectorCards ({ navigation } : Props) {
         toValue: 0,
         duration: 200, 
         useNativeDriver: true,
-        }).start(async() => {
-            await scanForDevices();
-            console.log(projectors);
-            navigation.navigate('BorrowModal', isSelected )
-            setIsSelected({
-        id: -1,
-        serialNumber: -1,
-        comment : '',
-        rent: false,
-    });
+        }).start(async () => {
+            const bleManager : BleManager = new BleManager() 
+            const isPermissionsEnabled = await requestPermissions();
+            bleManager.state().then(state => { bleManager.destroy();return  state === "PoweredOn" }).then(async(isEnabled) => {
+                if (isPermissionsEnabled && isEnabled) {
+                    await scanForDevices();
+                    console.log(projectors);
+                    navigation.navigate('BorrowModal', isSelected)
+                }
+                else {
+                    dispatch(addMessage(generateId(), "Please enable Bluetooth !", "danger"));
+                }
+
+                setIsSelected({
+                    id: -1,
+                    serialNumber: -1,
+                    comment: '',
+                    rent: false,
+                });
+            })
         });
 
     }

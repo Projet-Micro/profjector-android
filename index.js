@@ -6,7 +6,10 @@ import {
     logOutProfessor,
     registerDevice,
     unregisterDevice,
-    connectDevice
+    connectDevice,
+    toggleBluetooth,
+    addMessage,
+    deleteMessage
 } from './store/dispatcher'
 export {
     authenticateProfessor,
@@ -15,5 +18,8 @@ export {
     logOutProfessor,
     registerDevice,
     unregisterDevice,
-    connectDevice
+    connectDevice,
+    toggleBluetooth,
+    addMessage,
+    deleteMessage
 };

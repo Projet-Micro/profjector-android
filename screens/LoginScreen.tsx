@@ -18,7 +18,8 @@ type LoginForm = {
   }
 }
 export function Login() {
-     const professor = useSelector((state: GlobalState) => state.professors.professor);
+  const professor = useSelector((state: GlobalState) => state.professors.professor);
+  
     const [credentials, setCredentials] = useState<LoginForm>({
     email: {
       email: '',
@@ -114,7 +115,8 @@ export function Login() {
   } 
 
     return (
-            <SafeAreaView style={styles.container}>
+      
+    <SafeAreaView style={styles.container}>
       <View style={{position:"absolute",bottom:0,left:0}}>
         <Svg viewBox="-60 -20 200 200" width="500" height="500" style={{ transform:[{scaleY:2},{scaleX:0.5}]}}>
           <Path fill="#D8D4FC" d="M57,-39.6C70.9,-28.1,77,-4.5,69.2,10.3C61.4,25.1,39.7,31.2,24,31.8C8.3,32.3,-1.3,27.4,-17.3,24.2C-33.4,21,-55.8,19.4,-59.7,11.1C-63.6,2.8,-48.9,-12.2,-35.8,-23.6C-22.8,-35,-11.4,-42.7,5.1,-46.7C21.6,-50.8,43.1,-51.2,57,-39.6Z" transform="translate(100 100)" />

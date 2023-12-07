@@ -1,6 +1,7 @@
 import React from 'react'
 import { View,StyleSheet } from 'react-native'
 import ProjectorCards from '../components/ProjectorCard';
+import Toast from '../components/Toast';
 type ProjectorType = {
     id: number,
     serialNumber: number,
@@ -12,12 +13,17 @@ type RootStackParamList = {
     Home : undefined
 }
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { Provider } from 'react-redux';
+import store from '../store';
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 export default function Home({ navigation,route } : Props) {
     return (
+        <Provider store={store}>
         <View style={styles.container}>
             <ProjectorCards navigation={navigation} route={route}></ProjectorCards>
+            <Toast></Toast>
         </View>
+        </Provider>
     )
 }
 const styles = StyleSheet.create({

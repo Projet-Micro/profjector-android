@@ -2,6 +2,14 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Home from '../screens/HomeScreen';
 import { View, StyleSheet, Text } from 'react-native'
 import { ProjectorInfo } from '../shared/models';
+import { useEffect } from 'react';
+import { deleteMessage, loadProjectors, logOutProfessor } from '../index';
+import AsyncStorage from '@react-native-community/async-storage';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useSelector } from 'react-redux';
+import { getFirstLetter } from '../utils/getFirstLetter';
+import { GlobalState } from '../store/types';
+import BorrowModalScreen from '../screens/BorrowModalScreen';
 type RootStackParamList = {
   Main: undefined,
   BorrowModal: ProjectorInfo,
@@ -11,14 +19,6 @@ type MainStackParamList = {
   borrowModal: ProjectorInfo,
 }
 const RootStack = createStackNavigator<RootStackParamList>();
-import { useEffect } from 'react';
-import { loadProjectors, logOutProfessor } from '../index';
-import AsyncStorage from '@react-native-community/async-storage';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useSelector } from 'react-redux';
-import { getFirstLetter } from '../utils/getFirstLetter';
-import { GlobalState } from '../store/types';
-import BorrowModalScreen from '../screens/BorrowModalScreen';
 const MainStack = createStackNavigator<MainStackParamList>();
     const logOut = () => {
     AsyncStorage.clear();
@@ -47,6 +47,7 @@ const MainStackScreen = () => {
       headerRight:() =>
       {
         return <View style={styles.nav}>
+
         <View style={styles.shape}>
         </View>
         <View>
