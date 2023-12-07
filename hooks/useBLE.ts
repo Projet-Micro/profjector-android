@@ -160,7 +160,7 @@ function useBLE(): BluetoothLowEnergyApi {
             console.log(response.response);
             disconnectFromDevice(device).then(() => {
               loadProjectors();
-              addMessage(generateId(), "Projector borrowed Successfully !", "success");
+              addMessage(generateId(),response.response.message, "success");
             })
           }
           else if (response && response.status !== 200) {

@@ -21,7 +21,7 @@ function Message({ id, text, status }) {
                 useNativeDriver: true,
             })
         ]).start(() =>
-        {
+        {   
             dispatch(deleteMessage(id))
         }) 
     },[])
@@ -85,6 +85,9 @@ function Message({ id, text, status }) {
 }
 export default function Toast() {
     const messages = useSelector((state: GlobalState) => state.messages.messages);
+    useEffect(() => {
+        console.log(messages);
+    })
     return (
         <View
             style={{
